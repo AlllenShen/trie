@@ -45,13 +45,19 @@ public:
 	node* find(string word, bool ins = false);
 	void eraser(string word);
 	void insert(string word) { find(word, true); };
-	void list() const { list(root_); };
+	vector<string>::iterator list(vector<string> & v) const
+	{
+		list(root_, v);
+		vector<string>::iterator it = v.begin();
+		return it;
+	};
 	void list(node* r) const;
 	void preshow(string words) const;
 	void dump();
 	void load();
 	void generat_tree_by_text();
 	void generat_index();
+	void list(node* r, vector<string> & v) const;
 };
 
 #endif // !DICT_H

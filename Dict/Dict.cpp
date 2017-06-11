@@ -159,6 +159,31 @@ void trie::list(node * r) const
 		list(r->next());
 }
 
+void trie::list(node * r, vector<string>& v) const
+{
+	if (r->exist())
+	{
+		stack<char> word;
+		string s = "\0";
+		node* temp = r;
+		while (temp != root_)
+		{
+			word.push(temp->_char());
+			temp = temp->parent();
+		}
+		while (!word.empty())
+		{
+			s += word.top();
+			word.pop();
+		}
+		v.push_back(s);
+	}
+	if (r->first() != nullptr)
+		list(r->first());
+	if (r->next() != nullptr)
+		list(r->next());
+}
+
 node * node::next() const
 {
 	if (!isalpha(char_))
