@@ -4,6 +4,9 @@
 #include <vector>
 using namespace std;
 
+int get_index(char);
+vector<string> split(const string &, const string &);
+
 class node
 {
 private:
@@ -45,6 +48,10 @@ public:
 	void list() const { list(root_); };
 	void list(node* r) const;
 	void preshow(string words) const;
+	void dump();
+	void load();
+	void generat_tree_by_text();
+	void generat_index();
 };
 
 #endif // !DICT_H
