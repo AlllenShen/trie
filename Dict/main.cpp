@@ -5,8 +5,11 @@
 
 int main()
 {	
-	trie t;
-	t.insert("aswe");
-	t.insert("intji");
+	string file = "\0";
+	trie t(file);
+	vector<string> v = t.preshow("ab");
+	t.find("abuse");
+	t.find("abroad");
+	vector<string> m = t.preshow("ab");
 	system("pause");
 }

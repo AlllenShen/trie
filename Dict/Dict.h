@@ -2,6 +2,7 @@
 #define DICT_H
 #include <string>
 #include <vector>
+
 using namespace std;
 
 int get_index(char);
@@ -25,6 +26,7 @@ public:
 	int freq() { return freq_; };
 	void add_freq() { freq_++; };
 	int index() { return index_; };
+	void set_index(int i) { index_ = i; };
 	vector<node*> child() { return child_; };
 	node* parent() { return parent_; };
 	node* next() const;
@@ -37,27 +39,38 @@ class trie
 private:
 	node* root_;
 	int size_;
+	string path_;
 	
 public:
 	trie();
+	trie(string file);
 	~trie() { delete_(root_); };
 	void delete_(node* r);
 	node* find(string word, bool ins = false);
 	void eraser(string word);
-	void insert(string word) { find(word, true); };
-	vector<string>::iterator list(vector<string> & v) const
+	void insert_from_file(string word, int index);
+	void insert_new(string word, string prope, string meanning);
+	using vec_str_iter = vector<string>::iterator;
+	vec_str_iter list_iter(vector<string> & v) const
 	{
 		list(root_, v);
 		vector<string>::iterator it = v.begin();
 		return it;
 	};
-	void list(node* r) const;
-	void preshow(string words) const;
+	void list_print(node* r) const;
+	vector<string> preshow(string words) const;
 	void dump();
 	void load();
-	void generat_tree_by_text();
+	void generat_tree_by_file(string file="\0");
 	void generat_index();
 	void list(node* r, vector<string> & v) const;
+	void list_node(node* r, vector<node*> & v) const;
+	void sort_by_freq(vector<node*> & v, 
+						int begin, int end) const;
+	void partition(vector<node*> & v, 
+					int begin, int end, int & cutpoint) const;
+	string word_of_node(node* n) const;
+	void delete_item(vector<node*> & list, node* item) const;
 };
 
 #endif // !DICT_H
