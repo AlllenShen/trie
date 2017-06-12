@@ -3,6 +3,7 @@
 #include <iostream>
 #include <direct.h>
 #include <fstream>
+#include <math.h>
 #include "dict.h"
 
 int get_index(char c)
@@ -63,13 +64,16 @@ vector<string> split(const string &s, const string &seperator)
 int str_to_int(string num)
 {
 	stack<int> container;
+	int s = 0;
 	bool minus = false;
 	for (auto i : num)
+		container.push(i - 48);
+	for (int i = 0; !container.empty(); i++)
 	{
-		if (!isdigit(i) && i != '-')
-			return NULL;
-		if (i == '-')
+		s += container.top() * pow(10, i);
+		container.pop();
 	}
+	return s;
 }
 
 node::node(char c, node * parent, bool exi, int freq, int index)
