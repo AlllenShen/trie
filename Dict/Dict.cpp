@@ -72,12 +72,12 @@ string int_to_str(int num)
 	return str;
 }
 template<typename type>
-void del_item(vector<type> list, type item)
+void del_item(vector<type> & list, type item)
 {
 	vector<type>::iterator it = list.begin();
 	while (it != list.end())
 	{
-		if ((*it) == item)
+		if (*it == item)
 		{
 			list.erase(it);
 			return;
@@ -119,6 +119,7 @@ node * node::first() const
 			return child_[i];
 	return nullptr;
 }
+
 trie::trie()
 {
 	node *r = new node('\0', nullptr);
@@ -343,7 +344,8 @@ void trie::sort_by_freq(vector<node*>& v, int begin, int end) const
 		sort_by_freq(v, i + 1, end);
 	}
 }
-void trie::partition(vector<node*>& v, int begin, int end, int & cutpoint) const
+void trie::partition(vector<node*>& v, int begin,
+						int end, int & cutpoint) const
 {
 	node* temp = v[begin];
 	while (begin != end)
@@ -404,7 +406,7 @@ vector<string> trie::get_mean(string word)
 			{
 				p->set_index(atoi(line_part[0].c_str()));
 				del_item(line_part, line_part[0]);
-				del_item(line_part, line_part[1]);
+				del_item(line_part, line_part[0]);
 				return line_part;
 			}
 		}
@@ -416,7 +418,7 @@ vector<string> trie::get_mean(string word)
 	if (!is_num(line_part[0]))
 		return means;
 	del_item(line_part, line_part[0]);
-	del_item(line_part, line_part[1]);
+	del_item(line_part, line_part[0]);
 	return line_part;
 }
 

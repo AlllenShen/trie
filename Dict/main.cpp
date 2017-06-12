@@ -11,6 +11,7 @@ int main()
 	t.find("abuse");
 	t.find("abroad");
 	vector<string> m = t.preshow("ab");*/
-	string m = t.get_mean("abstract");
+	vector<string> m = t.get_mean("abnormal");
 	system("pause");
 }
+
