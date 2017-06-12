@@ -5,6 +5,7 @@
 #include <fstream>
 #include <math.h>
 #include <stdlib.h>
+#include <sstream>
 #include "dict.h"
 
 int get_index(char c)
@@ -62,20 +63,29 @@ vector<string> split(const string &s, const string &seperator)
 	}
 	return result;
 }
-int str_to_int(string num)
+string int_to_str(int num)
 {
-	stack<int> container;
-	int s = 0;
-	bool minus = false;
-	for (auto i : num)
-		container.push(i - 48);
-	for (int i = 0; !container.empty(); i++)
-	{
-		s += container.top() * pow(10, i);
-		container.pop();
-	}
-	return s;
+	stringstream s;
+	string str;
+	s << num;
+	s >> str;
+	return str;
 }
+template<typename type>
+void del_item(vector<type> list, type item)
+{
+	vector<type>::iterator it = list.begin();
+	while (it != list.end())
+	{
+		if ((*it) == item)
+		{
+			list.erase(it);
+			return;
+		}
+		else
+			it++;
+	}
+};
 
 node::node(char c, node * parent, bool exi, int freq, int index)
 {
@@ -88,13 +98,11 @@ node::node(char c, node * parent, bool exi, int freq, int index)
 	for (int i = 0; i < 26; i++)
 		child_[i] = nullptr;
 }
-
 void node::set_child(node *& r)
 {
 	int i = get_index(r->_char());
 	child_[i] = r;
 }
-
 node * node::next() const
 {
 	if (!isalpha(char_))
@@ -104,7 +112,6 @@ node * node::next() const
 			return parent_->child()[i];
 	return nullptr;
 }
-
 node * node::first() const
 {
 	for (int i = 0; i < 26; i++)
@@ -112,7 +119,6 @@ node * node::first() const
 			return child_[i];
 	return nullptr;
 }
-
 trie::trie()
 {
 	node *r = new node('\0', nullptr);
@@ -121,8 +127,8 @@ trie::trie()
 	char path[1000];
 	_getcwd(path, 1000);
 	path_ = path;
+	word_path_ = path_ + "\\wordlist.txt";
 }
-
 trie::trie(string file)
 {
 	node *r = new node('\0', nullptr);
@@ -131,9 +137,9 @@ trie::trie(string file)
 	char path[1000];
 	_getcwd(path, 1000);
 	path_ = path;
+	word_path_ = path_ + "\\wordlist.txt";
 	generat_tree_by_file(file);
 }
-
 void trie::delete_(node * r)
 {
 	node* p = r->first();
@@ -144,7 +150,6 @@ void trie::delete_(node * r)
 		delete_(n);
 	delete r;
 }
-
 node * trie::find(string word, bool ins)
 {
 	node *r = root_;
@@ -172,7 +177,6 @@ node * trie::find(string word, bool ins)
 		r->set_exist();
 	return r;
 }
-
 void trie::eraser(string word)
 {
 	node *p = find(word), *t;
@@ -190,25 +194,32 @@ void trie::eraser(string word)
 	}
 
 }
-
 void trie::insert_from_file(string word, int index)
 {
 	node* p = find(word, true);
 	if (p->index() == -1)
 		p->set_index(index);
 }
-
-void trie::insert_new(string word, string prope, string meanning)
+void trie::insert_new(string word, string prop, 
+						string meanning, string file)
 {
+	if (file == "\0")
+		file = word_path_;
 	fstream f;
-	f.open(path_ + "\\wordlist.txt");
+	f.open(file);
 	string line;
 	int i = 0;
 	while (getline(f, line))
 		i++;
-	line = string()
+	line = int_to_str(i) + " "
+			+ word + " "
+			+ prop + meanning;
+	f << line;
+	node* p = find(word, true);
+	if (p->index() == -1)
+		p->set_index(i);
+	f.close();
 }
-
 void trie::list_print(node * r) const
 {
 	if (r->exist())
@@ -232,7 +243,6 @@ void trie::list_print(node * r) const
 	if (r->next() != nullptr)
 		list_print(r->next());
 }
-
 vector<string> trie::preshow(string words) const
 {
 	node* p = root_;
@@ -258,7 +268,7 @@ vector<string> trie::preshow(string words) const
 		{
 			if (word_nodes[j] == word_nodes[i])
 			{
-				delete_item(word_nodes, word_nodes[j]);
+				del_item(word_nodes, word_nodes[j]);
 				j--;
 			}
 		}
@@ -284,11 +294,12 @@ vector<string> trie::preshow(string words) const
 		
 	return word_list;
 }
-
 void trie::generat_tree_by_file(string file)
 {
 	if (file == "\0")
-		file = path_ + "\\wordlist.txt";
+		file = word_path_;
+	else
+		word_path_ = file;
 	ifstream infile;
 	infile.open(file.c_str());
 	if (!infile)
@@ -298,13 +309,12 @@ void trie::generat_tree_by_file(string file)
 	{
 		vector<string> line_part = split(line, " ");
 		string word = line_part[1];
-		if (is_num(word))
+		if (!is_num(line_part[0]))
 			return;
 		insert_from_file(word, atoi(line_part[0].c_str()));
 	}
 	infile.close();
 }
-
 void trie::list(node * r, vector<string>& v) const
 {
 	if (r->exist())
@@ -314,7 +324,6 @@ void trie::list(node * r, vector<string>& v) const
 	if (r->next() != nullptr)
 		list(r->next(), v);
 }
-
 void trie::list_node(node* r, vector<node*> & v) const
 {
 	if (r->exist())
@@ -324,7 +333,6 @@ void trie::list_node(node* r, vector<node*> & v) const
 	if (r->next() != nullptr)
 		list_node(r->next(), v);
 }
-
 void trie::sort_by_freq(vector<node*>& v, int begin, int end) const 
 {
 	int i;
@@ -335,7 +343,6 @@ void trie::sort_by_freq(vector<node*>& v, int begin, int end) const
 		sort_by_freq(v, i + 1, end);
 	}
 }
-
 void trie::partition(vector<node*>& v, int begin, int end, int & cutpoint) const
 {
 	node* temp = v[begin];
@@ -361,7 +368,6 @@ void trie::partition(vector<node*>& v, int begin, int end, int & cutpoint) const
 	v[begin] = temp;
 	cutpoint = begin;
 }
-
 string trie::word_of_node(node * n) const
 {
 	stack<char> word;
@@ -379,18 +385,38 @@ string trie::word_of_node(node * n) const
 	}
 	return s;
 }
-
-void trie::delete_item(vector<node*> & list, node* item) const
+vector<string> trie::get_mean(string word)
 {
-	vector<node*>::iterator it = list.begin();
-	while (it != list.end())
+	string line;
+	vector<string> means;
+	node* p = find(word, true);
+	int index = p->index();
+	fstream out;
+	out.open(word_path_);
+	if (index == -1)
 	{
-		if ((*it) == item)
+		while (getline(out, line))
 		{
-			list.erase(it);
-			return;
+			vector<string> line_part = split(line, " ");
+			if (is_num(line_part[0]))
+				return means;
+			if (line_part[1] == word)
+			{
+				p->set_index(atoi(line_part[0].c_str()));
+				del_item(line_part, line_part[0]);
+				del_item(line_part, line_part[1]);
+				return line_part;
+			}
 		}
-		else
-			it++;
+		return means;
 	}
-};
+	for (int i=0 ; i < index; i++)
+		getline(out, line);
+	vector<string> line_part = split(line, " ");
+	if (!is_num(line_part[0]))
+		return means;
+	del_item(line_part, line_part[0]);
+	del_item(line_part, line_part[1]);
+	return line_part;
+}
+

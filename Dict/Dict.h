@@ -40,7 +40,7 @@ private:
 	node* root_;
 	int size_;
 	string path_;
-	
+	string word_path_;
 public:
 	trie();
 	trie(string file);
@@ -49,7 +49,8 @@ public:
 	node* find(string word, bool ins = false);
 	void eraser(string word);
 	void insert_from_file(string word, int index);
-	void insert_new(string word, string prope, string meanning);
+	void insert_new(string word, string prope,
+						string meanning, string file="\0");
 	using vec_str_iter = vector<string>::iterator;
 	vec_str_iter list_iter(vector<string> & v) const
 	{
@@ -69,7 +70,8 @@ public:
 	void partition(vector<node*> & v, 
 					int begin, int end, int & cutpoint) const;
 	string word_of_node(node* n) const;
-	void delete_item(vector<node*> & list, node* item) const;
+	vector<string> get_mean(string word);
+	
 };
 
 #endif // !DICT_H
