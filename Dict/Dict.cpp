@@ -264,33 +264,10 @@ vector<string> trie::preshow(string words) const
 		//每次使用同一个vector排序的设计是将排序算法独立与逻辑
 		//需要优化时只更新排序算法而不发生逻辑变动
 	}
-	for (int i=0; i < word_nodes.size(); i++)
-		for (int j = i + 1; j < word_nodes.size(); j++)
-		{
-			if (word_nodes[j] == word_nodes[i])
-			{
-				del_item(word_nodes, word_nodes[j]);
-				j--;
-			}
-		}
-	//int count = 0, i = 0;
-	//while (count < 10 && i < word_nodes.size())
 	for (int i = 0; i < 10; i++)
 	{
 		string word = word_of_node(word_nodes[i]);
-		/*for (int j = 0; j < word_list.size(); j++)
-		{
-			if (word_list[j] == word)
-			{
-				if (i++ >= word_nodes.size())
-					word = word_of_node(word_nodes[i]);
-				else
-					continue;
-				j--;
-			}
-		}*/
 		word_list.push_back(word);
-		//count++;
 	}
 		
 	return word_list;
@@ -328,7 +305,18 @@ void trie::list(node * r, vector<string>& v) const
 void trie::list_node(node* r, vector<node*> & v) const
 {
 	if (r->exist())
-		v.push_back(r);
+	{
+		bool rep = false;
+		for (auto i : v)
+			if (i == r)
+			{
+				rep = true;
+				break;
+			}
+		if (!rep)
+			v.push_back(r);
+	}
+		
 	if (r->first() != nullptr)
 		list_node(r->first(), v);
 	if (r->next() != nullptr)
