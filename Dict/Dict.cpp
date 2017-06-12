@@ -4,6 +4,7 @@
 #include <direct.h>
 #include <fstream>
 #include <math.h>
+#include <stdlib.h>
 #include "dict.h"
 
 int get_index(char c)
@@ -197,6 +198,17 @@ void trie::insert_from_file(string word, int index)
 		p->set_index(index);
 }
 
+void trie::insert_new(string word, string prope, string meanning)
+{
+	fstream f;
+	f.open(path_ + "\\wordlist.txt");
+	string line;
+	int i = 0;
+	while (getline(f, line))
+		i++;
+	line = string()
+}
+
 void trie::list_print(node * r) const
 {
 	if (r->exist())
@@ -288,8 +300,9 @@ void trie::generat_tree_by_file(string file)
 		string word = line_part[1];
 		if (is_num(word))
 			return;
-		insert_from_file(word, line_part[0]);
+		insert_from_file(word, atoi(line_part[0].c_str()));
 	}
+	infile.close();
 }
 
 void trie::list(node * r, vector<string>& v) const

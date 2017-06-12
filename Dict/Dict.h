@@ -62,7 +62,6 @@ public:
 	void dump();
 	void load();
 	void generat_tree_by_file(string file="\0");
-	void generat_index();
 	void list(node* r, vector<string> & v) const;
 	void list_node(node* r, vector<node*> & v) const;
 	void sort_by_freq(vector<node*> & v, 
