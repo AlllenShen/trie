@@ -6,7 +6,8 @@
 int main()
 {	
 	string file = "\0";
-	trie t(file);
+	//trie t(file);
+	trie t;
 	vector<string> v = t.preshow("ab");
 	t.find("abuse");
 	t.find("abroad");

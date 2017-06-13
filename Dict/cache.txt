@@ -1,0 +1,12 @@
+abandon 3 1
+ability 3 2
+abnormal 3 3
+aboard 3 4
+abroad 5 5
+absence 3 6
+absent 3 7
+absolute 5 8
+absolutely 3 9
+absorb 3 10
+abstract 3 11
+abundant 3 12

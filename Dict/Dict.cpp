@@ -129,6 +129,7 @@ trie::trie()
 	_getcwd(path, 1000);
 	path_ = path;
 	word_path_ = path_ + "\\wordlist.txt";
+	load();
 }
 trie::trie(string file)
 {
@@ -195,11 +196,14 @@ void trie::eraser(string word)
 	}
 
 }
-void trie::insert_from_file(string word, int index)
+void trie::insert_from_file(string word, int index, int freq)
 {
 	node* p = find(word, true);
 	if (p->index() == -1)
+	{
 		p->set_index(index);
+		p->set_freq(freq);
+	}
 }
 void trie::insert_new(string word, string prop, 
 						string meanning, string file)
@@ -269,8 +273,43 @@ vector<string> trie::preshow(string words) const
 		string word = word_of_node(word_nodes[i]);
 		word_list.push_back(word);
 	}
-		
 	return word_list;
+}
+void trie::dump()
+{
+	fstream f(word_path_);
+	fstream cache("cache.txt");
+	if (!f || !cache)
+		return;
+	string line;
+	while (getline(f, line))
+	{
+		string word = word_of_line(line);
+		node* p = find(word);
+		if (p == nullptr)
+			continue;
+		cache << word << " "
+			<< p->freq() << " "
+			<< p->index() << "\n";
+	}
+	f.close(); 
+	cache.close();
+}
+void trie::load()
+{
+	fstream cache;
+	cache.open("cache.txt", ios::in);
+	if (!cache)
+		return;
+	string line;
+	while (getline(cache, line))
+	{
+		vector<string> line_part = split(line, " ");
+		string word = line_part[0];
+		int freq = atoi(line_part[1].c_str()),
+			index = atoi(line_part[2].c_str());
+		insert_from_file(word, index, freq);
+	}
 }
 void trie::generat_tree_by_file(string file)
 {
@@ -408,5 +447,15 @@ vector<string> trie::get_mean(string word)
 	del_item(line_part, line_part[0]);
 	del_item(line_part, line_part[0]);
 	return line_part;
+}
+string trie::word_of_line(string line)
+{
+	vector<string> line_part = split(line, " ");
+	if (is_num(line_part[0]))
+		return line_part[1];
+	else if (line_part.size() >= 2)
+		return line_part[0];
+	else
+		return "\0";
 }
 

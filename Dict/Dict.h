@@ -25,6 +25,7 @@ public:
 	void set_exist() { exist_ = true; }
 	int freq() { return freq_; };
 	void add_freq() { freq_++; };
+	void set_freq(int f) { freq_ = f; };
 	int index() { return index_; };
 	void set_index(int i) { index_ = i; };
 	vector<node*> child() { return child_; };
@@ -44,11 +45,11 @@ private:
 public:
 	trie();
 	trie(string file);
-	~trie() { delete_(root_); };
+	~trie() { dump();  delete_(root_); };
 	void delete_(node* r);
 	node* find(string word, bool ins = false);
 	void eraser(string word);
-	void insert_from_file(string word, int index);
+	void insert_from_file(string word, int index, int freq=0);
 	void insert_new(string word, string prope,
 						string meanning, string file="\0");
 	using vec_str_iter = vector<string>::iterator;
@@ -71,7 +72,7 @@ public:
 					int begin, int end, int & cutpoint) const;
 	string word_of_node(node* n) const;
 	vector<string> get_mean(string word);
-	
+	string word_of_line(string line);
 };
 
 #endif // !DICT_H
