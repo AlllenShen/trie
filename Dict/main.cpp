@@ -13,6 +13,9 @@ int main()
 	t.find("abroad");
 	vector<string> m = t.preshow("ab");
 	//vector<string> m = t.get_mean("abnormal");
+	t.change_line({ "abandon", " "});
 	system("pause");
 }
+
+
 

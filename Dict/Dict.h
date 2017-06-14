@@ -73,6 +73,8 @@ public:
 	string word_of_node(node* n) const;
 	vector<string> get_mean(string word);
 	string word_of_line(string line);
+	void change_line(vector<string> change_line);
+	void del_line(int n);
 };
 
 #endif // !DICT_H

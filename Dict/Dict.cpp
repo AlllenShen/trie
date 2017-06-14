@@ -458,4 +458,36 @@ string trie::word_of_line(string line)
 	else
 		return "\0";
 }
-
+void trie::change_line(vector<string> change_line)
+// change_line [0] word [other] explainations
+{
+	fstream f(word_path_);
+	ofstream temp("temp.txt", ios::out | ios::trunc);
+	string line;
+	bool changed = false;
+	while (getline(f, line))
+	{
+		if (word_of_line(line) == change_line[0])
+		{
+			vector<string> line_part = split(line, " ");
+			for (int i = 1; i < line_part.size(); i++)
+				line_part[i] = change_line[i - 1];
+			for (int i = 0; i < line_part.size() - 1; i++)
+				temp << line_part[i] << " ";
+			temp << line_part[line_part.size() - 1] << "\n";
+			changed = true;
+			getline(f, line);
+		}
+		temp << line << "\n";
+	}
+	f.close(); temp.close();
+	if (changed)
+	{
+		fstream temp_("temp.txt");
+		ofstream f_;
+		f_.open(word_path_, ios::out | ios::trunc);
+		while (getline(temp_, line))
+			f_ << line << "\n";
+	}
+	system("del temp.txt");
+}
